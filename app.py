@@ -1,6 +1,8 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import joblib
 import os
+from wordcloud import WordCloud
 
 # 1. IMPORT HÀM TỪ THÀNH VIÊN DATA ENGINEER
 from data.data_preprocessing import clean_text
@@ -14,11 +16,15 @@ try:
     model = joblib.load(MODEL_PATH)
     vectorizer = joblib.load(VECTORIZER_PATH)
 except FileNotFoundError:
-    st.error("Chưa tìm thấy mô hình. Hãy nhắc \u201cThành viên 2\u201d chạy file `models/model_training.py` trước để huấn luyện AI.")
+    st.error("Chưa tìm thấy mô hình")
     st.stop()
 
 # Xây dựng giao diện Web (UI)
-st.set_page_config(page_title="Spam Classifier (Nhóm 3 Người)", page_icon="🚫", layout="wide")
+st.set_page_config(
+    page_title="Spam Classifier", 
+    page_icon="🚫", 
+    layout="wide"
+)
 
 # Khởi tạo danh sách lịch sử nếu chưa có
 if 'history' not in st.session_state:
@@ -62,6 +68,45 @@ with col1:
                 st.success(f"✅ **ĐÂY LÀ THƯ BÌNH THƯỜNG (HAM)**")
                 st.write(f"Độ tin cậy của AI: **{confidence:.2f}%**")
             
+            # --- TÍNH NĂNG GIẢI THÍCH AI (XAI) ---
+            st.markdown("---")
+            st.subheader("🕵️ Giải phẫu AI (Explainable AI)")
+            st.write("Dưới đây là căn cứ đưa ra quyết định của AI. Màu đỏ (hoặc xanh lá) thể hiện các ký tự mang tính ảnh hưởng mạnh đến quyết định.")
+            
+            try:
+                import html
+                vocab = vectorizer.vocabulary_
+                html_output = ["<div style='line-height: 1.8; font-size: 16px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa;'>"]
+                
+                # Thuật toán Tự làm (Custom XAI) tính toán trọng số trực tiếp không cần viện ngoài
+                for word in user_input.split():
+                    clean_w = clean_text(word)
+                    
+                    if clean_w in vocab:
+                        idx = vocab[clean_w]
+                        spam_prob = model.feature_log_prob_[1][idx]
+                        ham_prob = model.feature_log_prob_[0][idx]
+                        diff = spam_prob - ham_prob
+                        
+                        if diff > 1.0: # Rất Spam (Bôi đỏ đậm)
+                            html_output.append(f'<span style="background-color: #ffcccc; color: #cc0000; padding: 2px 4px; border-radius: 4px; font-weight: bold;" title="Điểm Spam: {diff:.2f}">{html.escape(word)}</span>')
+                        elif diff < -1.0: # Rất an toàn (Bôi xanh lá)
+                            html_output.append(f'<span style="background-color: #ccffcc; color: #006600; padding: 2px 4px; border-radius: 4px;" title="Điểm An toàn: {diff:.2f}">{html.escape(word)}</span>')
+                        elif diff > 0.0: # Hơi nghi ngờ (Đỏ nhạt)
+                            html_output.append(f'<span style="background-color: #ffeeee; color: #aa0000; padding: 2px 4px; border-radius: 4px;" title="Điểm nghi ngờ: {diff:.2f}">{html.escape(word)}</span>')
+                        else:
+                            html_output.append(html.escape(word))
+                    else:
+                        html_output.append(html.escape(word))
+                        
+                html_output.append("</div>")
+                
+                # Trình chiếu HTML lên giao diện
+                st.markdown(" ".join(html_output), unsafe_allow_html=True)
+                
+            except Exception as e:
+                st.warning(f"Tính năng giải phẫu AI có lỗi nhỏ: {e}")
+            
             # Lưu kết quả vào lịch sử
             st.session_state.history.append({
                 "Nội dung": user_input,
@@ -87,3 +132,26 @@ with col2:
         )
     else:
         st.info("Chưa có tin nhắn nào được phân tích.")
+
+    # -----------------
+    # ĐÁM MÂY TỪ KHÓA
+    # -----------------
+    st.markdown("---")
+    st.subheader("☁️ Đám mây từ khóa (Spam Word Cloud)")
+    st.write("Bản đồ nhiệt biểu diễn các từ khóa nguy hiểm nhất mà AI vừa học bằng cách soi chiếu trực tiếp vào 'não bộ':")
+    
+    try:
+        # Rút trích từ điển và tần suất Spam từ não bộ mô hình Naive Bayes
+        feature_names = vectorizer.get_feature_names_out()
+        spam_counts = model.feature_count_[1] 
+        word_freq = dict(zip(feature_names, spam_counts))
+        
+        # Vẽ đám mây
+        wc = WordCloud(width=800, height=450, background_color='white', colormap='Reds', max_words=100)
+        wc.generate_from_frequencies(word_freq)
+        
+        st.image(wc.to_array(), use_container_width=True)
+    except Exception as e:
+        st.warning(f"Lỗi vẽ mây: {e}")
+
+

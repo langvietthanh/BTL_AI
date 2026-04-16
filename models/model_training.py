@@ -26,15 +26,23 @@ def train_model():
 
     # 2. Xử lý dữ liệu
     df = pd.read_csv(txt_path, sep='\t', header=None, names=['label', 'message'])
-    print(f"Tổng số tin nhắn: {len(df)}")
+    print(f"Tổng số tin nhắn tiếng Anh: {len(df)}")
+    
+    # --- MỞ RỘNG TIẾNG VIỆT ---
+    vn_path = "vietnamese_data.csv"
+    if os.path.exists(vn_path):
+        df_vn = pd.read_csv(vn_path)
+        df = pd.concat([df, df_vn], ignore_index=True)
+        print(f"Đã trộn thêm dữ liệu Tiếng Việt. Tổng dataset: {len(df)}")
     
     # GỌI HÀM CỦA THÀNH VIÊN 1
     df['cleaned_msg'] = df['message'].apply(clean_text)
 
     # 3. Vector hóa TF-IDF
-    print("Đang huấn luyện mô hình...")
+    print("Đang phân tích...")
     X_train, X_test, y_train, y_test = train_test_split(df['cleaned_msg'], df['label'], test_size=0.2, random_state=42)
-    vectorizer = TfidfVectorizer(max_features=5000)
+    # Phải bắt được từ ghép (ví dụ: "vay_tiền", "trúng_thưởng"), nên dùng ngram_range=(1, 2)
+    vectorizer = TfidfVectorizer(max_features=8000, ngram_range=(1, 2))
     X_train_tfidf = vectorizer.fit_transform(X_train)
     X_test_tfidf = vectorizer.transform(X_test)
 
