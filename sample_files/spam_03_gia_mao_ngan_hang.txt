@@ -1,0 +1,21 @@
+Tu: Vietcombank Security <no-reply@vietcombank-secure.net>
+Chu de: [KHAN CAP] Tai khoan cua ban bi tam khoa - Xac thuc ngay
+
+Kinh gui Quy khach,
+
+He thong bao mat cua Vietcombank phat hien tai khoan cua ban co dau hieu truy cap bat thuong tu dia chi IP nuoc ngoai.
+
+De bao ve tai khoan, chung toi da TAM KHOA moi giao dich. Ban can XAC THUC DANH TINH trong vong 2 GIO, neu khong tai khoan se bi DONG VINH VIEN.
+
+Nhan vao lien ket duoi day de xac thuc:
+http://vietcombank-verify.xyz/confirm?token=abc123xyz
+
+Yeu cau thong tin xac thuc:
+- Ten dang nhap & Mat khau Internet Banking
+- OTP (ma xac thuc 2 buoc)
+- So the va ngay het han
+
+Neu ban khong thuc hien xac thuc, chung toi se khong chiu trach nhiem ve bat ky ton that nao.
+
+Tran trong,
+Bo phan Bao Mat - Vietcombank

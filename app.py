@@ -40,6 +40,28 @@ with col1:
     st.subheader("Kiểm tra tin nhắn / Email")
     user_input = st.text_area("Nhập nội dung vào bên dưới để kiểm tra:", height=150, placeholder="Vd: Chúc mừng bạn đã trúng thưởng iPhone 15, hãy click vào link sau...")
 
+    # --- TÍNH NĂNG IMPORT FILE .TXT ---
+    st.markdown("**Hoặc tải lên file văn bản (.txt) để kiểm tra:**")
+    uploaded_file = st.file_uploader(
+        "Chọn file .txt",
+        type=["txt"],
+        help="Upload file văn bản .txt — nội dung trong file sẽ được đọc và kiểm tra tự động.",
+        label_visibility="collapsed"
+    )
+
+    if uploaded_file is not None:
+        try:
+            file_content = uploaded_file.read().decode("utf-8")
+        except UnicodeDecodeError:
+            file_content = uploaded_file.read().decode("latin-1")
+
+        st.info(f"📄 Đã đọc file **{uploaded_file.name}** ({len(file_content)} ký tự). Nội dung file sẽ được dùng để phân tích.")
+        with st.expander("👁 Xem trước nội dung file"):
+            st.text(file_content[:2000] + ("..." if len(file_content) > 2000 else ""))
+
+        # Ghi đè nội dung từ file vào user_input
+        user_input = file_content
+
     if st.button("Phân tích"):
         if not user_input.strip():
             st.warning("Vui lòng nhập văn bản để dự đoán.")
@@ -76,7 +98,7 @@ with col1:
             try:
                 import html
                 vocab = vectorizer.vocabulary_
-                html_output = ["<div style='line-height: 1.8; font-size: 16px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa;'>"]
+                html_output = ["<div style='line-height: 1.8; font-size: 16px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #ffffff; color: #1a1a1a;'>"]
                 
                 # Thuật toán Tự làm (Custom XAI) tính toán trọng số trực tiếp không cần viện ngoài
                 for word in user_input.split():
@@ -89,15 +111,15 @@ with col1:
                         diff = spam_prob - ham_prob
                         
                         if diff > 1.0: # Rất Spam (Bôi đỏ đậm)
-                            html_output.append(f'<span style="background-color: #ffcccc; color: #cc0000; padding: 2px 4px; border-radius: 4px; font-weight: bold;" title="Điểm Spam: {diff:.2f}">{html.escape(word)}</span>')
+                            html_output.append(f'<span style="background-color: #ff4d4d; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-weight: bold;" title="Điểm Spam: {diff:.2f}">{html.escape(word)}</span>')
                         elif diff < -1.0: # Rất an toàn (Bôi xanh lá)
-                            html_output.append(f'<span style="background-color: #ccffcc; color: #006600; padding: 2px 4px; border-radius: 4px;" title="Điểm An toàn: {diff:.2f}">{html.escape(word)}</span>')
+                            html_output.append(f'<span style="background-color: #28a745; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-weight: bold;" title="Điểm An toàn: {diff:.2f}">{html.escape(word)}</span>')
                         elif diff > 0.0: # Hơi nghi ngờ (Đỏ nhạt)
-                            html_output.append(f'<span style="background-color: #ffeeee; color: #aa0000; padding: 2px 4px; border-radius: 4px;" title="Điểm nghi ngờ: {diff:.2f}">{html.escape(word)}</span>')
+                            html_output.append(f'<span style="background-color: #ffaa44; color: #ffffff; padding: 2px 6px; border-radius: 4px;" title="Điểm nghi ngờ: {diff:.2f}">{html.escape(word)}</span>')
                         else:
-                            html_output.append(html.escape(word))
+                            html_output.append(f'<span style="color: #1a1a1a;">{html.escape(word)}</span>')
                     else:
-                        html_output.append(html.escape(word))
+                        html_output.append(f'<span style="color: #555555;">{html.escape(word)}</span>')
                         
                 html_output.append("</div>")
                 
