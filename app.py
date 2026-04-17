@@ -7,7 +7,7 @@ from wordcloud import WordCloud
 # 1. IMPORT HÀM TỪ THÀNH VIÊN DATA ENGINEER
 from data.data_preprocessing import clean_text
 
-# 2. KHỞI TẠO ĐƯỜNG DẪN TỚI NÃO BỘ AI (THÀNH VIÊN ML ENGINEER)
+# 2. KHỞI TẠO ĐƯỜNG DẪN TỚI NÃO BỘ AI
 MODEL_PATH = os.path.join("models", "spam_model.pkl")
 VECTORIZER_PATH = os.path.join("models", "tfidf_vectorizer.pkl")
 
@@ -19,7 +19,7 @@ except FileNotFoundError:
     st.error("Chưa tìm thấy mô hình")
     st.stop()
 
-# Xây dựng giao diện Web (UI)
+# Xây dựng giao diện
 st.set_page_config(
     page_title="Spam Classifier", 
     page_icon="🚫", 
@@ -30,7 +30,7 @@ st.set_page_config(
 if 'history' not in st.session_state:
     st.session_state.history = []
 
-st.title("🚫 Hệ Thống Nhận Diện Spam AI")
+st.title("Hệ Thống Nhận Diện Spam AI")
 st.markdown("---")
 
 # Tạo 2 cột: Cột trái (phân tích) chiếm tỷ lệ 40%, cột phải (lịch sử) chiếm tỷ lệ 60%
@@ -44,13 +44,13 @@ with col1:
         if not user_input.strip():
             st.warning("Vui lòng nhập văn bản để dự đoán.")
         else:
-            # Tiền xử lý (Sử dụng code Tái chế từ Thành viên 1)
+            # Tiền xử lý 
             cleaned_msg = clean_text(user_input)
             
             # Biến đổi text thành số (Vector Hóa)
             vectorized_msg = vectorizer.transform([cleaned_msg])
             
-            # Nhận diện Spam/Ham (Sử dụng Model từ Thành viên 2)
+            # Nhận diện Spam/Ham
             prediction = model.predict(vectorized_msg)[0]
             
             # Tính phần trăm tự tin (Probability)
@@ -70,7 +70,7 @@ with col1:
             
             # --- TÍNH NĂNG GIẢI THÍCH AI (XAI) ---
             st.markdown("---")
-            st.subheader("🕵️ Giải phẫu AI (Explainable AI)")
+            st.subheader("Giải phẫu AI (Explainable AI)")
             st.write("Dưới đây là căn cứ đưa ra quyết định của AI. Màu đỏ (hoặc xanh lá) thể hiện các ký tự mang tính ảnh hưởng mạnh đến quyết định.")
             
             try:
@@ -118,7 +118,7 @@ with col2:
     # -----------------
     # BẢNG LICH SỬ
     # -----------------
-    st.subheader("📊 Lịch sử phân tích")
+    st.subheader("Lịch sử phân tích")
 
     if st.session_state.history:
         import pandas as pd
@@ -137,8 +137,8 @@ with col2:
     # ĐÁM MÂY TỪ KHÓA
     # -----------------
     st.markdown("---")
-    st.subheader("☁️ Đám mây từ khóa (Spam Word Cloud)")
-    st.write("Bản đồ nhiệt biểu diễn các từ khóa nguy hiểm nhất mà AI vừa học bằng cách soi chiếu trực tiếp vào 'não bộ':")
+    st.subheader("Đám mây từ khóa (Spam Word Cloud)")
+    st.write("Bản đồ nhiệt biểu diễn các từ khóa nguy hiểm nhất mà AI vừa học:")
     
     try:
         # Rút trích từ điển và tần suất Spam từ não bộ mô hình Naive Bayes

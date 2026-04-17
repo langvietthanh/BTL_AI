@@ -19,9 +19,9 @@ def train_model():
     print("="*50)
 
     # 1. Tải tập dữ liệu
-    txt_path = "SMSSpamCollection"
+    txt_path = os.path.join(os.path.dirname(__file__), "..", "dataset", "SMSSpamCollection")
     if not os.path.exists(txt_path):
-        print("Không tìm thấy dữ liệu. Hãy chắc chắn tập SMSSpamCollection đã có ở thư mục gốc.")
+        print(f"Không tìm thấy dữ liệu tại: {txt_path}. Hãy chắc chắn bạn đã tải tập dữ liệu.")
         return
 
     # 2. Xử lý dữ liệu
@@ -29,7 +29,7 @@ def train_model():
     print(f"Tổng số tin nhắn tiếng Anh: {len(df)}")
     
     # --- MỞ RỘNG TIẾNG VIỆT ---
-    vn_path = "vietnamese_data.csv"
+    vn_path = os.path.join(os.path.dirname(__file__), "..", "dataset", "vietnamese_data.csv")
     if os.path.exists(vn_path):
         df_vn = pd.read_csv(vn_path)
         df = pd.concat([df, df_vn], ignore_index=True)

@@ -40,6 +40,8 @@ vi_data = [
 # Nhân bản dữ liệu giả lập lên để làm cho trọng số Tiếng Việt có "sức nặng" cân bằng với bộ 5.500 tin Tiếng Anh
 augmented_data = vi_data * 20  # Nhân 20 lần = 600 tin nhắn Tiếng Việt
 
+import os
 df_vi = pd.DataFrame(augmented_data, columns=['label', 'message'])
-df_vi.to_csv("vietnamese_data.csv", index=False)
-print(f"Đã tạo tập dữ liệu tiếng việt với {len(df_vi)} dòng.")
+output_path = os.path.join(os.path.dirname(__file__), "..", "dataset", "vietnamese_data.csv")
+df_vi.to_csv(output_path, index=False)
+print(f"Đã tạo tập dữ liệu tiếng việt với {len(df_vi)} dòng tại {output_path}")
