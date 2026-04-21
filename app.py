@@ -33,7 +33,6 @@ if 'history' not in st.session_state:
 st.title("Hệ Thống Nhận Diện Spam AI")
 st.markdown("---")
 
-# Tạo 2 cột: Cột trái (phân tích) chiếm tỷ lệ 40%, cột phải (lịch sử) chiếm tỷ lệ 60%
 col1, col2 = st.columns([4, 6], gap="large")
 
 with col1:
@@ -100,7 +99,6 @@ with col1:
                 vocab = vectorizer.vocabulary_
                 html_output = ["<div style='line-height: 1.8; font-size: 16px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #ffffff; color: #1a1a1a;'>"]
                 
-                # Thuật toán Tự làm (Custom XAI) tính toán trọng số trực tiếp không cần viện ngoài
                 for word in user_input.split():
                     clean_w = clean_text(word)
                     
@@ -111,13 +109,21 @@ with col1:
                         diff = spam_prob - ham_prob
                         
                         if diff > 1.0: # Rất Spam (Bôi đỏ đậm)
-                            html_output.append(f'<span style="background-color: #ff4d4d; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-weight: bold;" title="Điểm Spam: {diff:.2f}">{html.escape(word)}</span>')
+                            html_output.append(
+                                f'<span style="background-color: #ff4d4d; color: #ffffff; padding: 2px 6px; bordser-radius: 4px; font-weight: bold;" title="Điểm Spam: {diff:.2f}">{html.escape(word)}</span>'
+                                )
                         elif diff < -1.0: # Rất an toàn (Bôi xanh lá)
-                            html_output.append(f'<span style="background-color: #28a745; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-weight: bold;" title="Điểm An toàn: {diff:.2f}">{html.escape(word)}</span>')
+                            html_output.append(
+                                f'<span style="background-color: #28a745; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-weight: bold;" title="Điểm An toàn: {diff:.2f}">{html.escape(word)}</span>'
+                                )
                         elif diff > 0.0: # Hơi nghi ngờ (Đỏ nhạt)
-                            html_output.append(f'<span style="background-color: #ffaa44; color: #ffffff; padding: 2px 6px; border-radius: 4px;" title="Điểm nghi ngờ: {diff:.2f}">{html.escape(word)}</span>')
+                            html_output.append(
+                                f'<span style="background-color: #ffaa44; color: #ffffff; padding: 2px 6px; border-radius: 4px;" title="Điểm nghi ngờ: {diff:.2f}">{html.escape(word)}</span>'
+                                )
                         else:
-                            html_output.append(f'<span style="color: #1a1a1a;">{html.escape(word)}</span>')
+                            html_output.append(
+                                f'<span style="color: #1a1a1a;">{html.escape(word)}</span>'
+                            )
                     else:
                         html_output.append(f'<span style="color: #555555;">{html.escape(word)}</span>')
                         
