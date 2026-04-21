@@ -2,7 +2,7 @@ import pandas as pd
 
 # Tập dữ liệu mẫu thực tiễn: Những tin nhắn mà sinh viên Việt Nam hay gặp
 vi_data = [
-    # ---- Dữ liệu SPAM (Thư rác) ----
+    # ---- Dữ liệu SPAM ----
     ('spam', 'Chúc mừng bạn đã trúng thưởng 1 chiếc iPhone 15 Pro Max, xin hãy truy cập link để điền thông tin nhận thưởng.'),
     ('spam', 'Cho vay tín chấp không cần thế chấp, giải ngân nhanh trong 5 phút, liên hệ Zalo 09xx'),
     ('spam', 'Tuyển nhân viên làm thêm tại nhà, việc nhẹ lương cao, thu nhập 500k-1 triệu/ngày, inbox để biết thêm chi tiết.'),
@@ -19,7 +19,7 @@ vi_data = [
     ('spam', 'Thông báo khóa tài khoản ngân hàng, vui lòng truy cập đường dẫn www.bank-verify-vn.com để xác minh.'),
     ('spam', 'Bán sim giá rẻ, sim số đẹp phong thủy, lộc phát tài, gọi hotline để mua ngay.'),
 
-    # ---- Dữ liệu HAM (Bình thường / Công việc) ----
+    # ---- Dữ liệu HAM ----
     ('ham', 'Hôm nay trưa ăn gì vậy mọi người? Đi ăn bún chả không?'),
     ('ham', 'Trưởng phòng ơi, em đã gửi file tiến độ báo cáo tuần này qua email, anh kiểm tra nhé.'),
     ('ham', 'Nhớ ghé siêu thị mua cho mẹ chai mật ong nha con.'),

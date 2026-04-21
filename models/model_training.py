@@ -1,6 +1,5 @@
 import sys
 import os
-# Cấu hình đường dẫn để có thể import thư mục gốc
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pandas as pd
@@ -9,8 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
-# IMPORT hàm của Thành viên 1 ở thư mục data
 from data.data_preprocessing import clean_text
 
 def train_model():
